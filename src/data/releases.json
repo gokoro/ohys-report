@@ -1,0 +1,32 @@
+[
+  [
+    { "name": "Kikansha no Mahou wa Tokubetsu Desu" },
+    { "name": "Buta no Liver wa Kanetsu Shiro" },
+    { "name": "Saihate no Paladin Tetsusabi no Yama no Ou" },
+    { "name": "Tearmoon Empire Story" },
+    { "name": "Ragna Crimson" },
+    { "name": "Kusuriya no Hitorigoto" },
+    { "name": "Bokura no Ame-iro Protocol" },
+    { "name": "Potion-danomi de Ikinobimasu!" },
+    { "name": "Nanatsu no Taizai Mokushiroku no Yonkishi" },
+    { "name": "Shangrilafrontier" },
+    { "name": "Captain Tsubasa Season 2 Junior Youth Hen" },
+    { "name": "Dekoboko Majo no Oyako Jijou" },
+    { "name": "Overtake!" }
+  ],
+  [
+    { "name": "MF Ghost" },
+    { "name": "Hyakkano" },
+    { "name": "Hoshikuzu Telepath" },
+    { "name": "Migi to Dali" },
+    { "name": "Dark Gathering" },
+    { "name": "Kamonohashi Ron no Kindan Suiri" },
+    { "name": "Kawagoe Boys Sing" }
+  ],
+  [{ "name": "TUE" }],
+  [{ "name": "WED" }],
+  [{ "name": "THU" }],
+  [{ "name": "FRI" }],
+  [{ "name": "SAT" }],
+  [{ "name": "etc" }]
+]
