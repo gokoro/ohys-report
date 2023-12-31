@@ -1,3 +1,5 @@
+import Brackets from '../assets/BidiBrackets.txt'
+
 async function getRaw() {
   const res = await fetch(
     'https://raw.githubusercontent.com/ohyongslck/annie/master/2023%404'
@@ -7,7 +9,7 @@ async function getRaw() {
 }
 
 async function getBracketsSources() {
-  const res = await fetch('assets/BidiBrackets.txt')
+  const res = await fetch(Brackets)
   const data = await res.text()
   return data
 }
