@@ -7,11 +7,11 @@ import { Input } from './components/input'
 import * as List from './components/list'
 import * as Select from './components/select'
 import { Textarea } from './components/textarea'
-import releases from './data/releases.json'
 import { useStore } from './stores/zustand'
+import { regularize } from './utils/ohys'
 import { sendEmbeds } from './utils/webhook'
 
-const eachOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+const eachOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 const etcToWeek = ['etc']
 
 const higherSelections = [...eachOfWeek, ...etcToWeek].map(
@@ -19,6 +19,13 @@ const higherSelections = [...eachOfWeek, ...etcToWeek].map(
 )
 
 function SelectionPage() {
+  const [releases, setReleases] =
+    useState<Awaited<ReturnType<typeof regularize>>>()
+
+  useEffect(() => {
+    regularize().then((data) => setReleases(data))
+  }, [])
+
   const [selected, setSelected] = useState(0)
   const set = useStore((s) => s.setTitle)
 
@@ -32,11 +39,15 @@ function SelectionPage() {
         ))}
       </List.Root>
       <List.Root>
-        {releases[selected].map((r) => (
-          <List.Item key={r.name} onClick={() => set(r.name)}>
-            {r.name}
-          </List.Item>
-        ))}
+        {releases &&
+          releases[selected].map(
+            (r) =>
+              r.name.trim() && (
+                <List.Item key={r.name} onClick={() => set(r.name)}>
+                  {r.name}
+                </List.Item>
+              )
+          )}
       </List.Root>
     </div>
   )
@@ -104,12 +115,15 @@ function CheckPage() {
 }
 
 function ReportPage() {
-  const schema = useStore((s) => ({
-    Type: s.getUpperValues().claimType,
-    Title: s.getUpperValues().title,
-    Episode: s.getUpperValues().episode,
-    Durations: s.getUpperValues().durations,
-  }))
+  const schema = useStore((s) => {
+    const { claimType, durations, episode, title } = s.getUpperValues()
+    return {
+      Type: claimType,
+      Title: title,
+      Episode: episode,
+      Durations: durations,
+    }
+  })
 
   const embedFields = Object.entries(schema)
     .map(([name, value]) => ({
@@ -124,7 +138,7 @@ function ReportPage() {
   const [reported, setReported] = useState(false)
 
   useEffect(() => {
-    sendEmbeds(embedFields!)
+    sendEmbeds(embedFields)
     setReported(true)
   }, [])
 
