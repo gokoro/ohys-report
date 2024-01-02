@@ -233,7 +233,7 @@ const checkPageStyles = stylex.create({
 })
 
 function CheckPage() {
-  const { claimType, duration, title, episode } = useStore((s) =>
+  const { claimType, duration, title, episode, resolution } = useStore((s) =>
     s.getUpperValues()
   )
 
@@ -244,11 +244,13 @@ function CheckPage() {
         <div {...stylex.props(checkPageStyles.secondaryContainer)}>
           <div {...stylex.props(checkPageStyles.label)}>Claim Type</div>
           <div {...stylex.props(checkPageStyles.label)}>Title</div>
+          <div {...stylex.props(checkPageStyles.label)}>Resolution</div>
           <div {...stylex.props(checkPageStyles.label)}>Episode</div>
         </div>
         <div {...stylex.props(checkPageStyles.secondaryContainer)}>
           <div>{claimType}</div>
           <div>{title}</div>
+          <div>{resolution}</div>
           <div>{episode}</div>
         </div>
         {duration && <div>duration: {duration}</div>}
@@ -259,12 +261,14 @@ function CheckPage() {
 
 function ReportPage() {
   const schema = useStore((s) => {
-    const { claimType, duration, episode, title } = s.getUpperValues()
+    const { claimType, duration, episode, title, resolution } =
+      s.getUpperValues()
     return {
       Type: claimType,
       Title: title,
+      Resolution: resolution,
       Episode: episode,
-      Durations: duration,
+      Duration: duration,
     }
   })
 
