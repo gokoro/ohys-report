@@ -70,9 +70,6 @@ devDependencies:
   vite:
     specifier: ^5.0.8
     version: 5.0.10(@types/node@20.10.6)
-  vite-plugin-stylex:
-    specifier: ^0.4.0
-    version: 0.4.1(@babel/traverse@7.23.6)(@babel/types@7.23.6)(vite@5.0.10)
   vite-plugin-stylex-dev:
     specifier: ^0.1.3
     version: 0.1.3(@babel/traverse@7.23.6)(@babel/types@7.23.6)
@@ -2072,23 +2069,6 @@ packages:
       - '@babel/traverse'
       - '@babel/types'
       - rollup
-      - supports-color
-    dev: true
-
-  /vite-plugin-stylex@0.4.1(@babel/traverse@7.23.6)(@babel/types@7.23.6)(vite@5.0.10):
-    resolution: {integrity: sha512-QBkZYZyf1Hj1pUGYejF2rR3nuZyHt3YrkwPPu3dr/algyurtps+YTJ5Db2zVSd8sSPkHURT9UB1CQaJYnMshWg==}
-    peerDependencies:
-      vite: ^4 || ^5
-    dependencies:
-      '@babel/core': 7.23.6
-      '@babel/plugin-syntax-flow': 7.23.3(@babel/core@7.23.6)
-      '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.23.6)
-      '@babel/plugin-syntax-typescript': 7.23.3(@babel/core@7.23.6)
-      '@stylexjs/babel-plugin': 0.3.0(@babel/core@7.23.6)(@babel/traverse@7.23.6)(@babel/types@7.23.6)
-      vite: 5.0.10(@types/node@20.10.6)
-    transitivePeerDependencies:
-      - '@babel/traverse'
-      - '@babel/types'
       - supports-color
     dev: true
 
