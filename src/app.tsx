@@ -170,7 +170,6 @@ function DetailPage({ dispatchNextPage }: { dispatchNextPage: () => void }) {
   const title = useStore((s) => s.title)
   const claimType = useStore((s) => s.claimType)
   const episode = useStore((s) => s.episode)
-  console.log('episode:', episode)
   const duration = useStore((s) => s.duration)
 
   const isDurationValueRequired =
