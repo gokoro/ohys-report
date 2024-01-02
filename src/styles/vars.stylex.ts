@@ -2,7 +2,7 @@
 // Using imported variables are prohibited when calling stylex-related functions.
 // Look at the details:
 // https://github.com/facebook/stylex/issues/112
-import {} from '@radix-ui/colors'
+// import {} from '@radix-ui/colors'
 import * as stylex from '@stylexjs/stylex'
 
 export const colors = stylex.defineVars({
