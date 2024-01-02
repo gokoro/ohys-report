@@ -1,10 +1,16 @@
 import { create } from 'zustand'
 import { StateCreator } from 'zustand'
 
+export const claimTypes = ['upload', 'videoError', 'audioError'] as const
+export const resolutions = ['1280x720', '1920x1080'] as const
+
+type ArrayUnion<T extends readonly string[]> = T[number]
+
 export interface SchemaType {
-  claimType: 'audioError' | 'upload' | 'videoError'
-  durations?: string
+  claimType: ArrayUnion<typeof claimTypes>
+  duration?: string
   episode: string
+  resolution: ArrayUnion<typeof resolutions>
   title: string
 }
 
@@ -13,10 +19,7 @@ export interface SchemaAction {
     Omit<SchemaType, 'claimType'> & { claimType: string }
   >
 
-  setClaimType: (t: SchemaType['claimType']) => void
-  setDurations: (t: SchemaType['durations']) => void
-  setEpisode: (t: SchemaType['episode']) => void
-  setTitle: (t: SchemaType['title']) => void
+  setSchema: (t: Partial<SchemaType>) => void
 }
 
 type SchemaSlice = SchemaType & SchemaAction
@@ -26,6 +29,7 @@ const createSchemaSlice: StateCreator<SchemaSlice, [], [], SchemaSlice> = (
   get
 ) => ({
   title: '',
+  resolution: '1280x720',
   claimType: 'upload',
   episode: '0',
 
@@ -40,10 +44,7 @@ const createSchemaSlice: StateCreator<SchemaSlice, [], [], SchemaSlice> = (
         {}
       ),
 
-  setClaimType: (claimType) => set(() => ({ claimType })),
-  setDurations: (durations) => set(() => ({ durations })),
-  setEpisode: (episode) => set(() => ({ episode })),
-  setTitle: (title) => set(() => ({ title })),
+  setSchema: (schema) => set(schema),
 })
 
 export const useStore = create<SchemaSlice>()((...payload) => ({

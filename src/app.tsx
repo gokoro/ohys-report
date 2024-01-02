@@ -10,8 +10,7 @@ import { Button } from './components/button'
 import { Input } from './components/input'
 import * as List from './components/list'
 import * as Select from './components/select'
-import { Textarea } from './components/textarea'
-import { useStore } from './stores/zustand'
+import { claimTypes, resolutions, useStore } from './stores/zustand'
 import './styles/styles.css'
 import { colors } from './styles/vars.stylex'
 import { regularize } from './utils/ohys'
@@ -75,7 +74,7 @@ function SelectionPage() {
   }, [])
 
   const [selected, setSelected] = useState(0)
-  const set = useStore((s) => s.setTitle)
+  const set = useStore((s) => (title: string) => s.setSchema({ title }))
   const title = useStore((s) => s.title)
 
   return (
@@ -130,12 +129,6 @@ function SelectionPage() {
   )
 }
 
-const claimTypes: SchemaType['claimType'][] = [
-  'upload',
-  'audioError',
-  'videoError',
-]
-
 const detailPageStyles = stylex.create({
   root: {
     marginTop: '2em',
@@ -157,9 +150,7 @@ function DetailPage() {
   const title = useStore((s) => s.title)
   const claimType = useStore((s) => s.claimType)
 
-  const setClaimType = useStore((s) => s.setClaimType)
-  const setDurations = useStore((s) => s.setDurations)
-  const setEpisode = useStore((s) => s.setEpisode)
+  const setSchema = useStore((s) => s.setSchema)
 
   return (
     <div>
@@ -175,7 +166,9 @@ function DetailPage() {
           </div>
           <Select.Root
             onChange={(e) =>
-              setClaimType(e.target.value as SchemaType['claimType'])
+              setSchema({
+                claimType: e.target.value as SchemaType['claimType'],
+              })
             }
           >
             {claimTypes.map((t) => (
@@ -186,15 +179,35 @@ function DetailPage() {
           </Select.Root>
         </div>
         <div {...stylex.props(detailPageStyles.container)}>
+          <div {...stylex.props(detailPageStyles.secondaryTitle)}>
+            Resolution
+          </div>
+          <Select.Root
+            onChange={(e) =>
+              setSchema({
+                resolution: e.target.value as SchemaType['resolution'],
+              })
+            }
+          >
+            {resolutions.map((t) => (
+              <Select.Item key={t} value={t}>
+                {t}
+              </Select.Item>
+            ))}
+          </Select.Root>
+        </div>
+        <div {...stylex.props(detailPageStyles.container)}>
           <div {...stylex.props(detailPageStyles.secondaryTitle)}>Episode</div>
-          <Input onChange={(e) => setEpisode(e.target.value)} />
+          <Input onChange={(e) => setSchema({ episode: e.target.value })} />
         </div>
         {(claimType === 'audioError' || claimType === 'videoError') && (
           <div>
             <div {...stylex.props(detailPageStyles.secondaryTitle)}>
-              Durations
+              Duration
             </div>
-            <Input onChange={(e) => setDurations(e.target.value)}></Input>
+            <Input
+              onChange={(e) => setSchema({ duration: e.target.value })}
+            ></Input>
           </div>
         )}
       </div>
@@ -220,7 +233,7 @@ const checkPageStyles = stylex.create({
 })
 
 function CheckPage() {
-  const { claimType, durations, title, episode } = useStore((s) =>
+  const { claimType, duration, title, episode } = useStore((s) =>
     s.getUpperValues()
   )
 
@@ -238,7 +251,7 @@ function CheckPage() {
           <div>{title}</div>
           <div>{episode}</div>
         </div>
-        {durations && <div>Durations: {durations}</div>}
+        {duration && <div>duration: {duration}</div>}
       </div>
     </div>
   )
@@ -246,12 +259,12 @@ function CheckPage() {
 
 function ReportPage() {
   const schema = useStore((s) => {
-    const { claimType, durations, episode, title } = s.getUpperValues()
+    const { claimType, duration, episode, title } = s.getUpperValues()
     return {
       Type: claimType,
       Title: title,
       Episode: episode,
-      Durations: durations,
+      Durations: duration,
     }
   })
 
