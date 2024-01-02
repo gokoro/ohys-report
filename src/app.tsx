@@ -70,7 +70,7 @@ const selectionPageStyle = stylex.create({
   },
 })
 
-function SelectionPage() {
+function SelectionPage({ dispatchNextPage }: { dispatchNextPage: () => void }) {
   const [releases, setReleases] =
     useState<Awaited<ReturnType<typeof regularize>>>()
 
@@ -85,60 +85,67 @@ function SelectionPage() {
   const title = useStore((s) => s.title)
 
   return (
-    <div>
-      <h1 {...stylex.props(selectionPageStyle.header)}>
-        Reporting issues of Ohys' releases.
-      </h1>
-      <div {...stylex.props(selectionPageStyle.secondaryHeader)}>
-        {contextYear}{' '}
-        {contextSeason.charAt(0).toUpperCase() + contextSeason.slice(1)}
-      </div>
-      <div {...stylex.props(selectionPageStyle.container)}>
-        <div {...stylex.props(selectionPageStyle.item)}>
-          <List.Root>
-            {higherSelections.map((s, i) => (
-              <List.Item
-                interactable
-                isActive={selected === i}
-                isHierarchy
-                key={s}
-                onClick={() => setSelected(i)}
-              >
-                {s}
-              </List.Item>
-            ))}
-          </List.Root>
+    <>
+      <div>
+        <h1 {...stylex.props(selectionPageStyle.header)}>
+          Reporting issues of Ohys' releases.
+        </h1>
+        <div {...stylex.props(selectionPageStyle.secondaryHeader)}>
+          {contextYear}{' '}
+          {contextSeason.charAt(0).toUpperCase() + contextSeason.slice(1)}
         </div>
-        <div
-          {...stylex.props(
-            selectionPageStyle.item,
-            selectionPageStyle.rightItem
-          )}
-        >
-          <div {...stylex.props(selectionPageStyle.scrollContainer)}>
-            <div {...stylex.props(selectionPageStyle.scrolled)}>
-              <List.Root>
-                {releases &&
-                  releases[selected].map(
-                    (r) =>
-                      r.name.trim() && (
-                        <List.Item
-                          interactable
-                          isActive={r.name === title}
-                          key={r.name}
-                          onClick={() => set(r.name)}
-                        >
-                          {r.name}
-                        </List.Item>
-                      )
-                  )}
-              </List.Root>
-            </div>
+        <div {...stylex.props(selectionPageStyle.container)}>
+          <div {...stylex.props(selectionPageStyle.item)}>
+            <List.Root>
+              {higherSelections.map((s, i) => (
+                <List.Item
+                  interactable
+                  isActive={selected === i}
+                  isHierarchy
+                  key={s}
+                  onClick={() => setSelected(i)}
+                >
+                  {s}
+                </List.Item>
+              ))}
+            </List.Root>
           </div>
-          <div {...stylex.props(selectionPageStyle.gradients)}></div>
+          <div
+            {...stylex.props(
+              selectionPageStyle.item,
+              selectionPageStyle.rightItem
+            )}
+          >
+            <div {...stylex.props(selectionPageStyle.scrollContainer)}>
+              <div {...stylex.props(selectionPageStyle.scrolled)}>
+                <List.Root>
+                  {releases &&
+                    releases[selected].map(
+                      (r) =>
+                        r.name.trim() && (
+                          <List.Item
+                            interactable
+                            isActive={r.name === title}
+                            key={r.name}
+                            onClick={() => set(r.name)}
+                          >
+                            {r.name}
+                          </List.Item>
+                        )
+                    )}
+                </List.Root>
+              </div>
+            </div>
+            <div {...stylex.props(selectionPageStyle.gradients)}></div>
+          </div>
         </div>
       </div>
-    </div>
+      <div {...stylex.props(appStyle.buttonContainer)}>
+        <Button disabled={!title} onClick={() => dispatchNextPage()}>
+          Next
+        </Button>
+      </div>
+    </>
   )
 }
 
@@ -159,72 +166,93 @@ const detailPageStyles = stylex.create({
   },
 })
 
-function DetailPage() {
+function DetailPage({ dispatchNextPage }: { dispatchNextPage: () => void }) {
   const title = useStore((s) => s.title)
   const claimType = useStore((s) => s.claimType)
+  const episode = useStore((s) => s.episode)
+  console.log('episode:', episode)
+  const duration = useStore((s) => s.duration)
+
+  const isDurationValueRequired =
+    claimType === 'audioError' || claimType === 'videoError'
 
   const setSchema = useStore((s) => s.setSchema)
 
   return (
-    <div>
-      <h1>Let us know the details of issue.</h1>
-      <div {...stylex.props(detailPageStyles.root)}>
-        <div {...stylex.props(detailPageStyles.container)}>
-          <div {...stylex.props(detailPageStyles.secondaryTitle)}>Title</div>
-          <div {...stylex.props(detailPageStyles.content)}>{title}</div>
-        </div>
-        <div {...stylex.props(detailPageStyles.container)}>
-          <div {...stylex.props(detailPageStyles.secondaryTitle)}>
-            Claim Type
+    <>
+      <div>
+        <h1>Let us know the details of issue.</h1>
+        <div {...stylex.props(detailPageStyles.root)}>
+          <div {...stylex.props(detailPageStyles.container)}>
+            <div {...stylex.props(detailPageStyles.secondaryTitle)}>Title</div>
+            <div {...stylex.props(detailPageStyles.content)}>{title}</div>
           </div>
-          <Select.Root
-            onChange={(e) =>
-              setSchema({
-                claimType: e.target.value as SchemaType['claimType'],
-              })
-            }
-          >
-            {claimTypes.map((t) => (
-              <Select.Item key={t} value={t}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </Select.Item>
-            ))}
-          </Select.Root>
-        </div>
-        <div {...stylex.props(detailPageStyles.container)}>
-          <div {...stylex.props(detailPageStyles.secondaryTitle)}>
-            Resolution
-          </div>
-          <Select.Root
-            onChange={(e) =>
-              setSchema({
-                resolution: e.target.value as SchemaType['resolution'],
-              })
-            }
-          >
-            {resolutions.map((t) => (
-              <Select.Item key={t} value={t}>
-                {t}
-              </Select.Item>
-            ))}
-          </Select.Root>
-        </div>
-        <div {...stylex.props(detailPageStyles.container)}>
-          <div {...stylex.props(detailPageStyles.secondaryTitle)}>Episode</div>
-          <Input onChange={(e) => setSchema({ episode: e.target.value })} />
-        </div>
-        {(claimType === 'audioError' || claimType === 'videoError') && (
-          <div>
+          <div {...stylex.props(detailPageStyles.container)}>
             <div {...stylex.props(detailPageStyles.secondaryTitle)}>
-              Duration
+              Claim Type
+            </div>
+            <Select.Root
+              onChange={(e) =>
+                setSchema({
+                  claimType: e.target.value as SchemaType['claimType'],
+                })
+              }
+            >
+              {claimTypes.map((t) => (
+                <Select.Item key={t} value={t}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </Select.Item>
+              ))}
+            </Select.Root>
+          </div>
+          <div {...stylex.props(detailPageStyles.container)}>
+            <div {...stylex.props(detailPageStyles.secondaryTitle)}>
+              Resolution
+            </div>
+            <Select.Root
+              onChange={(e) =>
+                setSchema({
+                  resolution: e.target.value as SchemaType['resolution'],
+                })
+              }
+            >
+              {resolutions.map((t) => (
+                <Select.Item key={t} value={t}>
+                  {t}
+                </Select.Item>
+              ))}
+            </Select.Root>
+          </div>
+          <div {...stylex.props(detailPageStyles.container)}>
+            <div {...stylex.props(detailPageStyles.secondaryTitle)}>
+              Episode
             </div>
             <Input
-              onChange={(e) => setSchema({ duration: e.target.value })}
-            ></Input>
+              defaultValue={episode}
+              onChange={(e) => setSchema({ episode: e.target.value })}
+            />
           </div>
-        )}
+          {isDurationValueRequired && (
+            <div>
+              <div {...stylex.props(detailPageStyles.secondaryTitle)}>
+                Duration
+              </div>
+              <Input
+                onChange={(e) => setSchema({ duration: e.target.value })}
+              ></Input>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+      <div {...stylex.props(appStyle.buttonContainer)}>
+        <Button
+          disabled={isDurationValueRequired && typeof duration === 'undefined'}
+          onClick={() => dispatchNextPage()}
+        >
+          Next
+        </Button>
+      </div>
+    </>
   )
 }
 
@@ -245,30 +273,38 @@ const checkPageStyles = stylex.create({
   },
 })
 
-function CheckPage() {
+function CheckPage({ dispatchNextPage }: { dispatchNextPage: () => void }) {
   const { claimType, duration, title, episode, resolution } = useStore((s) =>
     s.getUpperValues()
   )
 
   return (
-    <div>
-      <h1>Check the details you claim.</h1>
-      <div {...stylex.props(checkPageStyles.container)}>
-        <div {...stylex.props(checkPageStyles.secondaryContainer)}>
-          <div {...stylex.props(checkPageStyles.label)}>Claim Type</div>
-          <div {...stylex.props(checkPageStyles.label)}>Title</div>
-          <div {...stylex.props(checkPageStyles.label)}>Resolution</div>
-          <div {...stylex.props(checkPageStyles.label)}>Episode</div>
+    <>
+      <div>
+        <h1>Check the details you claim.</h1>
+        <div {...stylex.props(checkPageStyles.container)}>
+          <div {...stylex.props(checkPageStyles.secondaryContainer)}>
+            <div {...stylex.props(checkPageStyles.label)}>Claim Type</div>
+            <div {...stylex.props(checkPageStyles.label)}>Title</div>
+            <div {...stylex.props(checkPageStyles.label)}>Resolution</div>
+            <div {...stylex.props(checkPageStyles.label)}>Episode</div>
+            {duration && (
+              <div {...stylex.props(checkPageStyles.label)}>Duration</div>
+            )}
+          </div>
+          <div {...stylex.props(checkPageStyles.secondaryContainer)}>
+            <div>{claimType}</div>
+            <div>{title}</div>
+            <div>{resolution}</div>
+            <div>{episode}</div>
+            {duration && <div>{duration}</div>}
+          </div>
         </div>
-        <div {...stylex.props(checkPageStyles.secondaryContainer)}>
-          <div>{claimType}</div>
-          <div>{title}</div>
-          <div>{resolution}</div>
-          <div>{episode}</div>
-        </div>
-        {duration && <div>duration: {duration}</div>}
       </div>
-    </div>
+      <div {...stylex.props(appStyle.buttonContainer)}>
+        <Button onClick={() => dispatchNextPage()}>Next</Button>
+      </div>
+    </>
   )
 }
 
@@ -303,11 +339,16 @@ function ReportPage() {
   }, [])
 
   return (
-    <h1>
-      {reported
-        ? 'The issue has been successfully reported 🤩'
-        : 'Reporting...'}
-    </h1>
+    <>
+      <h1>
+        {reported
+          ? 'The issue has been successfully reported 🤩'
+          : 'Reporting...'}
+      </h1>
+      <div {...stylex.props(appStyle.buttonContainer)}>
+        <Button onClick={() => location.reload()}>Done</Button>
+      </div>
+    </>
   )
 }
 
@@ -347,24 +388,15 @@ const appStyle = stylex.create({
 function App() {
   const [pageCount, setPageCount] = useState(0)
   const pages = [
-    <SelectionPage />,
-    <DetailPage />,
-    <CheckPage />,
+    <SelectionPage dispatchNextPage={() => setPageCount((c) => c + 1)} />,
+    <DetailPage dispatchNextPage={() => setPageCount((c) => c + 1)} />,
+    <CheckPage dispatchNextPage={() => setPageCount((c) => c + 1)} />,
     <ReportPage />,
   ]
 
   return (
     <div {...stylex.props(mainStyle.container)}>
-      <div {...stylex.props(mainStyle.box)}>
-        {pages[pageCount]}
-        <div {...stylex.props(appStyle.buttonContainer)}>
-          {pageCount < pages.length - 1 ? (
-            <Button onClick={() => setPageCount((c) => c + 1)}>Next</Button>
-          ) : (
-            <Button onClick={() => location.reload()}>Done</Button>
-          )}
-        </div>
-      </div>
+      <div {...stylex.props(mainStyle.box)}>{pages[pageCount]}</div>
     </div>
   )
 }
