@@ -1,9 +1,22 @@
 import Brackets from '../assets/BidiBrackets.txt'
 
-async function getRaw() {
-  const res = await fetch(
-    'https://raw.githubusercontent.com/ohyongslck/annie/master/2023%404'
-  )
+const seasons = ['spring', 'summer', 'fall', 'winter'] as const
+
+const endpoint = 'https://raw.githubusercontent.com/ohyongslck/annie/master'
+
+type Year = number
+type Season = (typeof seasons)[number]
+
+export interface SeasonParam {
+  season: Season
+  year: Year
+}
+
+const buildUrlContext = ({ year, season }: SeasonParam) =>
+  `${endpoint}/${year}%40${seasons.indexOf(season) + 1}`
+
+async function getRaw({ year, season }: SeasonParam) {
+  const res = await fetch(buildUrlContext({ year, season }))
   const data = await res.text()
   return data
 }
@@ -58,9 +71,9 @@ function filterMatchingBrackets(brackets: string[], raw: string) {
   return [applied[maxIdx * 2], applied[maxIdx * 2 + 1]]
 }
 
-export async function regularize() {
+export async function regularize(ctx: SeasonParam) {
   const brackets = await getBrackets()
-  const raw = await getRaw()
+  const raw = await getRaw(ctx)
 
   const splitedList = raw.split('\n')
   const [open, end] = filterMatchingBrackets(brackets, raw)

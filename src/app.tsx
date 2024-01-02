@@ -16,6 +16,9 @@ import { colors } from './styles/vars.stylex'
 import { regularize } from './utils/ohys'
 import { sendEmbeds } from './utils/webhook'
 
+const contextYear = import.meta.env.VITE_CONTEXT_YEAR
+const contextSeason = import.meta.env.VITE_CONTEXT_SEASON
+
 const eachOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 const etcToWeek = ['etc']
 
@@ -70,7 +73,9 @@ function SelectionPage() {
     useState<Awaited<ReturnType<typeof regularize>>>()
 
   useEffect(() => {
-    regularize().then((data) => setReleases(data))
+    regularize({ year: contextYear, season: contextSeason }).then((data) =>
+      setReleases(data)
+    )
   }, [])
 
   const [selected, setSelected] = useState(0)
