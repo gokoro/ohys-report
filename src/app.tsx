@@ -27,6 +27,8 @@ const higherSelections = [...eachOfWeek, ...etcToWeek].map(
 )
 
 const selectionPageStyle = stylex.create({
+  header: { marginBottom: 10 },
+  secondaryHeader: { color: colors.gray11 },
   container: {
     display: 'flex',
     gap: '3em',
@@ -84,7 +86,13 @@ function SelectionPage() {
 
   return (
     <div>
-      <h1>Reporting issues of Ohys' releases.</h1>
+      <h1 {...stylex.props(selectionPageStyle.header)}>
+        Reporting issues of Ohys' releases.
+      </h1>
+      <div {...stylex.props(selectionPageStyle.secondaryHeader)}>
+        {contextYear}{' '}
+        {contextSeason.charAt(0).toUpperCase() + contextSeason.slice(1)}
+      </div>
       <div {...stylex.props(selectionPageStyle.container)}>
         <div {...stylex.props(selectionPageStyle.item)}>
           <List.Root>
